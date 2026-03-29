@@ -144,10 +144,13 @@ export function ExpandableBanner() {
                 </div>
 
                 {/* Track Info */}
-                <div>
-                  <marquee className="text-2xl md:text-3xl font-bold text-zinc-900 dark:text-zinc-50 line-clamp-2 leading-tight mb-2">
-                    {currentTrack.title}
-                  </marquee>
+                <div className="max-w-full overflow-hidden">
+                  <div className="marquee-container text-2xl md:text-3xl font-bold text-zinc-900 dark:text-zinc-50 leading-tight mb-2">
+                    <div className="animate-marquee-slow flex w-max">
+                      <span className="pr-8">{currentTrack.title} &nbsp; • &nbsp; </span>
+                      <span className="pr-8">{currentTrack.title} &nbsp; • &nbsp; </span>
+                    </div>
+                  </div>
                   <p className="text-lg text-zinc-500 dark:text-zinc-400 truncate">
                     {currentTrack.author}
                   </p>
