@@ -7,7 +7,7 @@ import { TrackItem } from "@/components/ui/TrackItem";
 import { cn } from "@/lib/utils";
 
 export default function PlaylistsPage() {
-  const { playlists, addPlaylist, removePlaylist, removeTrackFromPlaylist, setCurrentTrack, updatePlaylistCover } = useMusicStore();
+  const { playlists, addPlaylist, removePlaylist, removeTrackFromPlaylist, setCurrentTrack, setQueue, updatePlaylistCover } = useMusicStore();
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [selectedPlaylistId, setSelectedPlaylistId] = useState<string | null>(null);
   const [mounted, setMounted] = useState(false);
@@ -19,6 +19,11 @@ export default function PlaylistsPage() {
   if (!mounted) return null;
 
   const activePlaylist = playlists.find(p => p.id === selectedPlaylistId);
+
+  const startPlaylist = (tracks: Track[]) => {
+    setQueue(tracks);
+    setCurrentTrack(tracks[0]);
+  };
 
   return (
     <div className="p-6 md:p-10 max-w-4xl mx-auto h-full flex flex-col">
@@ -151,7 +156,7 @@ export default function PlaylistsPage() {
                   
                   {activePlaylist.tracks.length > 0 && (
                      <button
-                        onClick={() => setCurrentTrack(activePlaylist.tracks[0])}
+                        onClick={() => startPlaylist(activePlaylist.tracks)}
                         className="flex items-center gap-2 px-8 h-14 rounded-2xl bg-blue-600 text-white font-bold hover:bg-blue-700 transition-all shadow-lg active:scale-95"
                       >
                         <Play className="w-6 h-6 fill-white" />

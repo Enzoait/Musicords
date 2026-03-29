@@ -42,9 +42,13 @@ interface MusicState {
   // History and Playlists
   recentlyPlayed: Track[];
   playlists: Playlist[];
+  queue: Track[];
 
   // Actions
   setCurrentTrack: (track: Track) => void;
+  setQueue: (queue: Track[]) => void;
+  playNextTrack: () => void;
+  playPreviousTrack: () => void;
   setIsPlaying: (isPlaying: boolean) => void;
   togglePlayPause: () => void;
   setIsExpanded: (isExpanded: boolean) => void;
@@ -75,10 +79,33 @@ export const useMusicStore = create<MusicState>()(
 
       recentlyPlayed: [],
       playlists: [],
+      queue: [],
 
       setCurrentTrack: (track) => {
         set({ currentTrack: track, isPlaying: true, progress: 0 });
         get().addToRecentlyPlayed(track);
+      },
+      setQueue: (queue) => set({ queue }),
+      playNextTrack: () => {
+        const { currentTrack, queue, setCurrentTrack, setIsPlaying } = get();
+        if (!currentTrack || queue.length === 0) {
+          setIsPlaying(false);
+          return;
+        }
+        const index = queue.findIndex(t => t.id === currentTrack.id);
+        if (index !== -1 && index < queue.length - 1) {
+          setCurrentTrack(queue[index + 1]);
+        } else {
+          setIsPlaying(false);
+        }
+      },
+      playPreviousTrack: () => {
+        const { currentTrack, queue, setCurrentTrack } = get();
+        if (!currentTrack || queue.length === 0) return;
+        const index = queue.findIndex(t => t.id === currentTrack.id);
+        if (index > 0) {
+          setCurrentTrack(queue[index - 1]);
+        }
       },
       setIsPlaying: (isPlaying) => set({ isPlaying }),
       togglePlayPause: () => set((state) => ({ isPlaying: !state.isPlaying })),

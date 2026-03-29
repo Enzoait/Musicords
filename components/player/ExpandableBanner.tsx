@@ -14,7 +14,9 @@ export function ExpandableBanner() {
     isExpanded, 
     setIsExpanded,
     progress,
-    duration
+    duration,
+    playNextTrack,
+    playPreviousTrack
   } = useMusicStore();
 
   const [hasWindow, setHasWindow] = useState(false);
@@ -152,7 +154,7 @@ export function ExpandableBanner() {
 
                 {/* Controls */}
                 <div className="flex items-center justify-center gap-8 md:gap-12">
-                  <button className="text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-50 transition-colors hidden">
+                  <button className="text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-50 transition-colors " onClick={() => playPreviousTrack()}>
                     <SkipBack className="w-8 h-8" fill="currentColor" />
                   </button>
                   <button 
@@ -161,7 +163,7 @@ export function ExpandableBanner() {
                   >
                     {isPlaying ? <Pause className="w-10 h-10" fill="currentColor" /> : <Play className="w-10 h-10 ml-2" fill="currentColor" />}
                   </button>
-                  <button className="text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-50 transition-colors hidden">
+                  <button className="text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-50 transition-colors " onClick={() => playNextTrack()}>
                     <SkipForward className="w-8 h-8" fill="currentColor" />
                   </button>
                 </div>

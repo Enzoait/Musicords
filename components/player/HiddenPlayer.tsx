@@ -22,6 +22,12 @@ export function HiddenPlayer() {
         try {
           const time = await playerRef.current.getCurrentTime();
           setProgress(time);
+          
+          // Also try to get duration if it's still 0
+          if (useMusicStore.getState().duration === 0) {
+            const dur = await playerRef.current.getDuration();
+            if (dur > 0) setDuration(dur);
+          }
         } catch (e) {
           // ignore
         }
@@ -38,17 +44,28 @@ export function HiddenPlayer() {
 
   useEffect(() => {
     if (playerRef.current && currentTrack) {
-      if (isPlaying) {
-        playerRef.current.playVideo();
-        startProgressInterval();
-      } else {
-        playerRef.current.pauseVideo();
-        stopProgressInterval();
+      try {
+        // If the track is different from the one currently in the player, load it
+        if (playerRef.current.getVideoData?.()?.video_id !== currentTrack.id) {
+          playerRef.current.loadVideoById(currentTrack.id);
+          setDuration(0);
+          setProgress(0);
+        }
+
+        if (isPlaying) {
+          playerRef.current.playVideo();
+          startProgressInterval();
+        } else {
+          playerRef.current.pauseVideo();
+          stopProgressInterval();
+        }
+      } catch (err) {
+        console.error("Player interaction error:", err);
       }
     }
     
     return () => stopProgressInterval();
-  }, [isPlaying, currentTrack]);
+  }, [isPlaying, currentTrack?.id]);
 
   useEffect(() => {
     if (playerRef.current) {
@@ -59,27 +76,31 @@ export function HiddenPlayer() {
   const onReady: YouTubeProps['onReady'] = (event) => {
     playerRef.current = event.target;
     playerRef.current.setVolume(volume);
+    const dur = event.target.getDuration();
+    if (dur > 0) setDuration(dur);
+    
     if (isPlaying) {
-      playerRef.current.playVideo();
+      event.target.playVideo();
       startProgressInterval();
     }
   };
 
   const onStateChange: YouTubeProps['onStateChange'] = async (event) => {
+    const state = event.data;
     // 1: PLAYING, 2: PAUSED, 0: ENDED
-    if (event.data === 1) {
+    if (state === 1) {
       setIsPlaying(true);
       startProgressInterval();
-      const dur = await event.target.getDuration();
-      setDuration(dur);
-    } else if (event.data === 2) {
+      const dur = event.target.getDuration();
+      if (dur > 0) setDuration(dur);
+    } else if (state === 2) {
       setIsPlaying(false);
       stopProgressInterval();
-    } else if (event.data === 0) {
+    } else if (state === 0) {
       setIsPlaying(false);
       stopProgressInterval();
       setProgress(0);
-      // Optional: Logic to play next track
+      useMusicStore.getState().playNextTrack();
     }
   };
 
@@ -93,11 +114,13 @@ export function HiddenPlayer() {
           width: '10',
           height: '10',
           playerVars: {
-            autoplay: isPlaying ? 1 : 0,
+            autoplay: 1,
             controls: 0,
             disablekb: 1,
             fs: 0,
             rel: 0,
+            showinfo: 0,
+            modestbranding: 1
           },
         }}
         onReady={onReady}

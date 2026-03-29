@@ -13,7 +13,7 @@ export default function SearchPage() {
   const [result, setResult] = useState<Track | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
-  const { setCurrentTrack } = useMusicStore();
+  const { setCurrentTrack, setQueue } = useMusicStore();
 
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -34,6 +34,7 @@ export default function SearchPage() {
 
   const handlePlay = () => {
     if (result) {
+      setQueue([result]);
       setCurrentTrack(result);
     }
   };
@@ -76,7 +77,7 @@ export default function SearchPage() {
 
       {result && (
         <div className="mt-8 animate-in fade-in slide-in-from-bottom-4">
-          <div className="p-4 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl shadow-sm">
+          <div className="p-4 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl shadow-sm mb-20">
             <div className="aspect-video w-full rounded-xl overflow-hidden bg-zinc-100 dark:bg-zinc-800 mb-4 relative">
               <img 
                 src={result.thumbnail} 
@@ -109,7 +110,7 @@ export default function SearchPage() {
                 <ListPlus className="w-5 h-5" />
                 Ajouter à une playlist
               </button>
-            </div>
+            </div> 
           </div>
         </div>
       )}
