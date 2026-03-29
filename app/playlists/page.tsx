@@ -1,7 +1,7 @@
 "use client";
 
 import { useMusicStore, Playlist, Track } from "@/lib/store";
-import { Plus, MoreVertical, Play, Trash2, Camera, X, ChevronLeft, ListMusic } from "lucide-react";
+import { Plus, MoreVertical, Play, Trash2, Camera, X, ChevronLeft, ListMusic, Shuffle } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import { TrackItem } from "@/components/ui/TrackItem";
 import { cn } from "@/lib/utils";
@@ -20,7 +20,10 @@ export default function PlaylistsPage() {
 
   const activePlaylist = playlists.find(p => p.id === selectedPlaylistId);
 
-  const startPlaylist = (tracks: Track[]) => {
+  const startPlaylist = (tracks: Track[], random: boolean = false) => {
+    if (random) {
+      tracks.sort(() => Math.random() - 0.5);
+    }
     setQueue(tracks);
     setCurrentTrack(tracks[0]);
   };
@@ -155,13 +158,23 @@ export default function PlaylistsPage() {
                   </p>
                   
                   {activePlaylist.tracks.length > 0 && (
-                     <button
-                        onClick={() => startPlaylist(activePlaylist.tracks)}
+                    <div className="flex gap-4">
+                      <button
+                        onClick={() => startPlaylist(activePlaylist.tracks, false)}
                         className="flex items-center gap-2 px-8 h-14 rounded-2xl bg-blue-600 text-white font-bold hover:bg-blue-700 transition-all shadow-lg active:scale-95"
                       >
                         <Play className="w-6 h-6 fill-white" />
                         Tout lire
                       </button>
+                      <button
+                        onClick={() => startPlaylist(activePlaylist.tracks, true)}
+                        className="flex items-center gap-2 px-8 h-14 rounded-2xl bg-blue-600 text-white font-bold hover:bg-blue-700 transition-all shadow-lg active:scale-95"
+                      >
+                        <Shuffle className="w-6 h-6 fill-white" />
+                        Lecture aléatoire
+                      </button>
+                      </div>
+                      
                   )}
                 </div>
               </header>

@@ -42,26 +42,34 @@ export function HiddenPlayer() {
     }
   };
 
-  useEffect(() => {
-    if (playerRef.current && currentTrack) {
-      try {
-        // If the track is different from the one currently in the player, load it
-        if (playerRef.current.getVideoData?.()?.video_id !== currentTrack.id) {
-          playerRef.current.loadVideoById(currentTrack.id);
-          setDuration(0);
-          setProgress(0);
-        }
+  const lastVideoId = useRef<string | null>(null);
 
+  useEffect(() => {
+    const player = playerRef.current;
+    if (!player || !currentTrack) return;
+
+    try {
+      const isNewTrack = lastVideoId.current !== currentTrack.id;
+      
+      if (isNewTrack) {
+        lastVideoId.current = currentTrack.id;
+        player.loadVideoById(currentTrack.id);
+        setDuration(0);
+        setProgress(0);
+        // loadVideoById plays automatically, so we sync our store state
+        setIsPlaying(true); 
+      } else {
+        // Same track, just handle play/pause toggle
         if (isPlaying) {
-          playerRef.current.playVideo();
+          player.playVideo();
           startProgressInterval();
         } else {
-          playerRef.current.pauseVideo();
+          player.pauseVideo();
           stopProgressInterval();
         }
-      } catch (err) {
-        console.error("Player interaction error:", err);
       }
+    } catch (err) {
+      console.error("Player interaction error:", err);
     }
     
     return () => stopProgressInterval();
