@@ -49,6 +49,9 @@ export function HiddenPlayer() {
     if (!player || !currentTrack) return;
 
     try {
+      // Ensure the player is fully ready and has the API methods
+      if (typeof player.loadVideoById !== 'function') return;
+
       const isNewTrack = lastVideoId.current !== currentTrack.id;
       
       if (isNewTrack) {
@@ -64,7 +67,10 @@ export function HiddenPlayer() {
           player.playVideo();
           startProgressInterval();
         } else {
-          player.pauseVideo();
+          // Check if pauseVideo exists too
+          if (typeof player.pauseVideo === 'function') {
+            player.pauseVideo();
+          }
           stopProgressInterval();
         }
       }

@@ -20,6 +20,21 @@ export function ExpandableBanner() {
   } = useMusicStore();
 
   const [hasWindow, setHasWindow] = useState(false);
+  const [isCooldown, setIsCooldown] = useState(false);
+
+  const handlePlayNext = () => {
+    if (isCooldown) return;
+    setIsCooldown(true);
+    playNextTrack();
+    setTimeout(() => setIsCooldown(false), 3000);
+  };
+
+  const handlePlayPrevious = () => {
+    if (isCooldown) return;
+    setIsCooldown(true);
+    playPreviousTrack();
+    setTimeout(() => setIsCooldown(false), 3000);
+  };
 
   useEffect(() => {
     setHasWindow(true);
@@ -53,7 +68,7 @@ export function ExpandableBanner() {
               <img 
                 src={currentTrack.thumbnail} 
                 alt={currentTrack.title}
-                className="w-12 h-12 rounded-xl object-cover"
+                className="w-12 h-12 rounded-xl object-cover scale-135"
               />
               <div className="flex-1 min-w-0">
                 <h4 className="font-semibold text-sm text-zinc-900 dark:text-zinc-50 truncate">
@@ -95,7 +110,7 @@ export function ExpandableBanner() {
           >
             {/* Background blur */}
             <div 
-              className="absolute inset-0 opacity-20 dark:opacity-40 blur-3xl scale-150 pointer-events-none"
+              className="absolute inset-0 opacity-20 dark:opacity-40 blur-3xl scale-135 pointer-events-none"
               style={{ backgroundImage: `url(${currentTrack.thumbnail})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
             />
 
@@ -123,7 +138,7 @@ export function ExpandableBanner() {
                   <img 
                     src={currentTrack.thumbnail} 
                     alt={currentTrack.title}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover scale-135"
                   />
                 </motion.div>
                 </div>
@@ -154,16 +169,32 @@ export function ExpandableBanner() {
 
                 {/* Controls */}
                 <div className="flex items-center justify-center gap-8 md:gap-12">
-                  <button className="text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-50 transition-colors " onClick={() => playPreviousTrack()}>
+                  <button 
+                    disabled={isCooldown}
+                    className={cn(
+                      "text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-50 transition-all",
+                      isCooldown && "opacity-50 cursor-wait"
+                    )}
+                    onClick={handlePlayPrevious}
+                  >
                     <SkipBack className="w-8 h-8" fill="currentColor" />
                   </button>
+                  
                   <button 
                     onClick={() => togglePlayPause()}
                     className="w-20 h-20 flex items-center justify-center rounded-full bg-blue-600 text-white shadow-xl hover:scale-105 active:scale-95 transition-all"
                   >
                     {isPlaying ? <Pause className="w-10 h-10" fill="currentColor" /> : <Play className="w-10 h-10 ml-2" fill="currentColor" />}
                   </button>
-                  <button className="text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-50 transition-colors " onClick={() => playNextTrack()}>
+
+                  <button 
+                    disabled={isCooldown}
+                    className={cn(
+                      "text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-50 transition-all",
+                      isCooldown && "opacity-50 cursor-wait"
+                    )}
+                    onClick={handlePlayNext}
+                  >
                     <SkipForward className="w-8 h-8" fill="currentColor" />
                   </button>
                 </div>

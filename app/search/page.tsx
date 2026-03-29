@@ -82,7 +82,7 @@ export default function SearchPage() {
               <img 
                 src={result.thumbnail} 
                 alt={result.title}
-                className="w-full h-full object-cover"
+                className="w-full h-full object-cover scale-135"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
             </div>

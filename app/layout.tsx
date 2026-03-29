@@ -11,6 +11,11 @@ export const metadata: Metadata = {
   title: "Musicords",
   description: "A complete music application with YouTube audio streaming.",
   manifest: "/manifest.json",
+  icons: {
+    icon: "/favicon.svg",
+    shortcut: "/favicon.svg",
+    apple: "/favicon.svg",
+  },
 };
 
 export const viewport: Viewport = {

@@ -17,7 +17,7 @@ export function TrackItem({ track, onClick, onRemove }: TrackItemProps) {
         <img 
           src={track.thumbnail} 
           alt={track.title}
-          className="w-full h-full object-cover"
+          className="w-full h-full object-cover scale-135"
         />
         <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
           <Play className="w-6 h-6 text-white" fill="currentColor" />

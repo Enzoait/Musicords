@@ -65,6 +65,7 @@ interface MusicState {
 
   // History Actions
   addToRecentlyPlayed: (track: Track) => void;
+  clearAllData: () => void;
 }
 
 export const useMusicStore = create<MusicState>()(
@@ -148,6 +149,18 @@ export const useMusicStore = create<MusicState>()(
         const newRecentlyPlayed = [track, ...filtered].slice(0, 50); // Keep last 50
         return { recentlyPlayed: newRecentlyPlayed };
       }),
+      clearAllData: () => {
+        if (confirm("Êtes-vous sûr de vouloir supprimer TOUTES vos données (playlists, historique, etc.) ? Cette action est irréversible.")) {
+          set({ 
+            recentlyPlayed: [], 
+            playlists: [], 
+            queue: [],
+            currentTrack: null,
+            isPlaying: false 
+          });
+          // Note: persistence handles the clearing in IndexedDB automatically on set
+        }
+      },
     }),
     {
       name: 'musicords-storage',

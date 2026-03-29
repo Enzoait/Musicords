@@ -66,7 +66,7 @@ export default function PlaylistsPage() {
                 >
                   <div className="relative aspect-square rounded-2xl overflow-hidden bg-zinc-100 dark:bg-zinc-800 shadow-md transition-transform group-hover:scale-[1.02]">
                     {playlist.cover ? (
-                      <img src={playlist.cover} alt={playlist.name} className="w-full h-full object-cover" />
+                      <img src={playlist.cover} alt={playlist.name} className="w-full h-full object-cover scale-135" />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-blue-500 to-indigo-600">
                         <ListMusic className="w-12 h-12 text-white/50" />
@@ -106,7 +106,7 @@ export default function PlaylistsPage() {
               <header className="flex flex-col md:flex-row items-end gap-6">
                 <div className="relative w-48 h-48 md:w-56 md:h-56 rounded-3xl overflow-hidden shadow-2xl shrink-0 group">
                   {activePlaylist.cover ? (
-                    <img src={activePlaylist.cover} alt={activePlaylist.name} className="w-full h-full object-cover" />
+                    <img src={activePlaylist.cover} alt={activePlaylist.name} className="w-full h-full object-cover scale-135" />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-blue-500 to-indigo-600">
                       <ListMusic className="w-20 h-20 text-white/50" />

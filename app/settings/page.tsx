@@ -3,6 +3,7 @@
 import { useTheme } from "next-themes";
 import { Moon, Sun, Monitor, Check } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useMusicStore } from "@/lib/store";
 import { cn } from "@/lib/utils";
 
 export default function SettingsPage() {
@@ -58,6 +59,24 @@ export default function SettingsPage() {
                 </button>
               );
             })}
+          </div>
+        </section>
+
+        <section className="space-y-4">
+          <h2 className="text-lg font-semibold text-zinc-900 dark:text-zinc-50 flex items-center gap-2">
+            Zone de danger
+          </h2>
+          <div className="p-6 rounded-2xl bg-red-50 dark:bg-red-900/10 border border-red-100 dark:border-red-900/30">
+            <h3 className="font-bold text-red-600 dark:text-red-400 mb-2">Tout supprimer</h3>
+            <p className="text-sm text-red-600/70 dark:text-red-400/70 mb-6">
+              Cette action supprimera définitivement toutes vos playlists, votre historique d'écoute et vos réglages.
+            </p>
+            <button
+              onClick={() => useMusicStore.getState().clearAllData()}
+              className="px-6 h-12 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold transition-all shadow-lg active:scale-95"
+            >
+              Tout supprimer maintenant
+            </button>
           </div>
         </section>
 

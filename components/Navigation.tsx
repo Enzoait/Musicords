@@ -41,9 +41,7 @@ export function Navigation() {
       {/* Desktop Sidebar Navigation */}
       <aside className="hidden md:flex flex-col w-64 h-screen fixed left-0 top-0 bg-zinc-50 dark:bg-zinc-950 border-r border-zinc-200 dark:border-zinc-800 z-50">
         <div className="p-6 flex items-center space-x-3">
-          <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center">
-            <span className="text-white font-bold text-lg">M</span>
-          </div>
+          <img src="/favicon-transparent.svg" alt="Musicords Logo" className="w-9 h-9" />
           <h1 className="text-xl font-bold text-zinc-900 dark:text-white tracking-tight">Musicords</h1>
         </div>
         
