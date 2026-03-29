@@ -98,7 +98,7 @@ export function ExpandableBanner() {
             />
 
             <div className="relative z-10 flex-1 flex flex-col h-full max-w-md mx-auto w-full px-6 py-8 md:py-12">
-              <header className="flex items-center justify-between mb-8">
+              <header className="flex items-center justify-between mb-2">
                 <button 
                   onClick={() => setIsExpanded(false)}
                   className="p-2 -ml-2 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-900 transition-colors"
@@ -111,10 +111,11 @@ export function ExpandableBanner() {
                 <div className="w-12" /> {/* Spacer */}
               </header>
 
-              <div className="flex-1 flex flex-col justify-center gap-10">
+              <div className="flex-1 flex flex-col justify-center gap-14 md:gap-4">
                 {/* 1:1 Cover Art */}
+                <div className="flex flex-col items-center">
                 <motion.div 
-                  className="w-full aspect-square rounded-3xl shadow-2xl overflow-hidden bg-zinc-100 dark:bg-zinc-900"
+                  className="w-[75%] aspect-square rounded-3xl shadow-2xl overflow-hidden bg-zinc-100 dark:bg-zinc-900"
                   layoutId="cover-art"
                 >
                   <img 
@@ -123,12 +124,13 @@ export function ExpandableBanner() {
                     className="w-full h-full object-cover"
                   />
                 </motion.div>
+                </div>
 
                 {/* Track Info */}
                 <div>
-                  <h2 className="text-2xl md:text-3xl font-bold text-zinc-900 dark:text-zinc-50 line-clamp-2 leading-tight mb-2">
+                  <marquee className="text-2xl md:text-3xl font-bold text-zinc-900 dark:text-zinc-50 line-clamp-2 leading-tight mb-2">
                     {currentTrack.title}
-                  </h2>
+                  </marquee>
                   <p className="text-lg text-zinc-500 dark:text-zinc-400 truncate">
                     {currentTrack.author}
                   </p>
