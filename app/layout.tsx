@@ -16,6 +16,11 @@ export const metadata: Metadata = {
     shortcut: "/favicon.svg",
     apple: "/favicon.svg",
   },
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: "Musicords",
+  },
 };
 
 export const viewport: Viewport = {

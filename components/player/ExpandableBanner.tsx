@@ -5,6 +5,7 @@ import { Play, Pause, ChevronDown, SkipForward, SkipBack, Maximize2 } from "luci
 import { motion, AnimatePresence } from "framer-motion";
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
+import { playTrackDirectly, resumeTrackDirectly, pauseTrackDirectly } from "./HiddenPlayer";
 
 export function ExpandableBanner() {
   const { 
@@ -25,6 +26,16 @@ export function ExpandableBanner() {
   const handlePlayNext = () => {
     if (isCooldown) return;
     setIsCooldown(true);
+    
+    // Find next track to play it directly for iOS
+    const { queue } = useMusicStore.getState();
+    if (currentTrack && queue.length > 0) {
+      const index = queue.findIndex(t => t.id === currentTrack.id);
+      if (index !== -1 && index < queue.length - 1) {
+        playTrackDirectly(queue[index + 1].id);
+      }
+    }
+
     playNextTrack();
     setTimeout(() => setIsCooldown(false), 3000);
   };
@@ -32,6 +43,16 @@ export function ExpandableBanner() {
   const handlePlayPrevious = () => {
     if (isCooldown) return;
     setIsCooldown(true);
+
+    // Find previous track for iOS direct play
+    const { queue } = useMusicStore.getState();
+    if (currentTrack && queue.length > 0) {
+      const index = queue.findIndex(t => t.id === currentTrack.id);
+      if (index > 0) {
+        playTrackDirectly(queue[index - 1].id);
+      }
+    }
+
     playPreviousTrack();
     setTimeout(() => setIsCooldown(false), 3000);
   };
@@ -80,7 +101,12 @@ export function ExpandableBanner() {
               </div>
               <div className="flex items-center gap-2 pr-2">
                 <button
-                  onClick={(e) => { e.stopPropagation(); togglePlayPause(); }}
+                  onClick={(e) => { 
+                    e.stopPropagation(); 
+                    if (isPlaying) pauseTrackDirectly();
+                    else resumeTrackDirectly();
+                    togglePlayPause(); 
+                  }}
                   className="w-10 h-10 flex items-center justify-center rounded-full bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400 hover:scale-105 transition-transform"
                 >
                   {isPlaying ? <Pause className="w-5 h-5" fill="currentColor" /> : <Play className="w-5 h-5 ml-1" fill="currentColor" />}
@@ -184,7 +210,11 @@ export function ExpandableBanner() {
                   </button>
                   
                   <button 
-                    onClick={() => togglePlayPause()}
+                    onClick={() => {
+                      if (isPlaying) pauseTrackDirectly();
+                      else resumeTrackDirectly();
+                      togglePlayPause();
+                    }}
                     className="w-20 h-20 flex items-center justify-center rounded-full bg-blue-600 text-white shadow-xl hover:scale-105 active:scale-95 transition-all"
                   >
                     {isPlaying ? <Pause className="w-10 h-10" fill="currentColor" /> : <Play className="w-10 h-10 ml-2" fill="currentColor" />}

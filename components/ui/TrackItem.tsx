@@ -7,11 +7,19 @@ interface TrackItemProps {
   onRemove?: () => void;
 }
 
+import { playTrackDirectly } from "../player/HiddenPlayer";
+
 export function TrackItem({ track, onClick, onRemove }: TrackItemProps) {
+  const handlePlayClick = () => {
+    // Calling this directly in the click handler allows iOS Safari to play the video
+    playTrackDirectly(track.id);
+    onClick();
+  };
+
   return (
     <div 
       className="group flex items-center gap-4 p-3 rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-900 transition-colors cursor-pointer"
-      onClick={onClick}
+      onClick={handlePlayClick}
     >
       <div className="relative w-14 h-14 rounded-lg overflow-hidden shrink-0 bg-zinc-200 dark:bg-zinc-800">
         <img 

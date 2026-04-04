@@ -4,6 +4,32 @@ import { useEffect, useRef } from "react";
 import YouTube, { type YouTubeProps } from "react-youtube";
 import { useMusicStore } from "@/lib/store";
 
+let globalPlayer: any = null;
+let lastTrackId: string | null = null;
+
+/**
+ * Direct playback commands to bypass iOS Safari autoplay restrictions.
+ * These must be called from within a user interaction click handler.
+ */
+export const playTrackDirectly = (id: string) => {
+  if (globalPlayer && typeof globalPlayer.loadVideoById === "function") {
+    lastTrackId = id;
+    globalPlayer.loadVideoById(id);
+  }
+};
+
+export const pauseTrackDirectly = () => {
+  if (globalPlayer && typeof globalPlayer.pauseVideo === "function") {
+    globalPlayer.pauseVideo();
+  }
+};
+
+export const resumeTrackDirectly = () => {
+  if (globalPlayer && typeof globalPlayer.playVideo === "function") {
+    globalPlayer.playVideo();
+  }
+};
+
 export function HiddenPlayer() {
   const currentTrack = useMusicStore((state) => state.currentTrack);
   const isPlaying = useMusicStore((state) => state.isPlaying);
@@ -42,8 +68,6 @@ export function HiddenPlayer() {
     }
   };
 
-  const lastVideoId = useRef<string | null>(null);
-
   useEffect(() => {
     const player = playerRef.current;
     if (!player || !currentTrack) return;
@@ -52,10 +76,10 @@ export function HiddenPlayer() {
       // Ensure the player is fully ready and has the API methods
       if (typeof player.loadVideoById !== 'function') return;
 
-      const isNewTrack = lastVideoId.current !== currentTrack.id;
+      const isNewTrack = lastTrackId !== currentTrack.id;
       
       if (isNewTrack) {
-        lastVideoId.current = currentTrack.id;
+        lastTrackId = currentTrack.id;
         player.loadVideoById(currentTrack.id);
         setDuration(0);
         setProgress(0);
@@ -89,6 +113,7 @@ export function HiddenPlayer() {
 
   const onReady: YouTubeProps['onReady'] = (event) => {
     playerRef.current = event.target;
+    globalPlayer = event.target; // Set global reference
     playerRef.current.setVolume(volume);
     const dur = event.target.getDuration();
     if (dur > 0) setDuration(dur);
@@ -121,12 +146,12 @@ export function HiddenPlayer() {
   if (!currentTrack) return null;
 
   return (
-    <div className="opacity-0 pointer-events-none absolute w-0 h-0 overflow-hidden" aria-hidden="true">
+    <div className="fixed -left-[9999px] top-0 w-[1px] h-[1px] opacity-0 pointer-events-none overflow-hidden" aria-hidden="true">
       <YouTube
         videoId={currentTrack.id}
         opts={{
-          width: '10',
-          height: '10',
+          width: '1',
+          height: '1',
           playerVars: {
             autoplay: 1,
             controls: 0,
@@ -134,7 +159,8 @@ export function HiddenPlayer() {
             fs: 0,
             rel: 0,
             showinfo: 0,
-            modestbranding: 1
+            modestbranding: 1,
+            playsinline: 1,
           },
         }}
         onReady={onReady}
